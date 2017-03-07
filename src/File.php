@@ -5,6 +5,7 @@ use Laracasts\Presenter\PresentableTrait;
 use Minhbang\Kit\Extensions\Model;
 use Minhbang\Kit\Traits\Model\DatetimeQuery;
 use DB;
+use Minhbang\Kit\Traits\Model\SearchQuery;
 
 /**
  * Class File
@@ -39,15 +40,18 @@ use DB;
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File yesterday($same_time = false, $field = 'created_at')
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File thisWeek($field = 'created_at')
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File thisMonth($field = 'created_at')
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File searchKeyword($keyword, $columns = null)
  * @mixin \Eloquent
  */
 class File extends Model
 {
+    use SearchQuery;
     use DatetimeQuery;
     use PresentableTrait;
     protected $presenter = FilePresenter::class;
     protected $table = 'files';
     protected $fillable = ['title'];
+    protected $searchable = ['title'];
     /**
      * Thư mục 'base' của tất cả các file
      *
@@ -85,16 +89,13 @@ class File extends Model
     }
 
     /**
-     * @param \App\Http\Requests\Request|mixed $request
+     * @param \App\Http\Requests\Request|string $request
      *
      * @return bool
      */
     public function fillFile($request)
     {
         if ($file = $request->file('name')) {
-            if ( ! $this->exists) {
-                $this->created_at = Carbon::now();
-            }
             $filename = xuuid() . '.' . strtolower($file->getClientOriginalExtension());
             $file     = $file->move($this->path, $filename);
             $this->performDeleteFile();
@@ -106,6 +107,14 @@ class File extends Model
         } else {
             return false;
         }
+
+    }
+
+    /**
+     * @param string $filepath
+     */
+    public function fillFileFormPath($filepath)
+    {
 
     }
 
@@ -125,6 +134,10 @@ class File extends Model
      */
     public function getPathAttribute()
     {
+        if ( ! $this->exists) {
+            $this->created_at = Carbon::now();
+        }
+
         return mb_mkdir(static::$base_path, $this->created_at);
     }
 

@@ -74,13 +74,17 @@ class FilePresenter extends Presenter
 
     /**
      * @param string $route
+     * @param array $params
      * @param string $attribute
      * @param array $options
      *
      * @return string
      */
-    public function link($route, $attribute = 'title', $options = [])
+    public function link($route, $params = [], $attribute = 'title', $options = [])
     {
-        return Html::link(route($route, ['file' => $this->entity->id]), $this->title($attribute), $options);
+        $params['file'] = $this->entity->id;
+
+        return '<a target="blank" href="' . route($route, $params) . '"
+                   ' . Html::attributes($options) . '>' . $this->title($attribute) . '</a>';
     }
 }
