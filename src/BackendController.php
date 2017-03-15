@@ -3,6 +3,8 @@
 use Minhbang\Kit\Extensions\BackendController as BaseController;
 use Minhbang\Kit\Traits\Controller\QuickUpdateActions;
 use Illuminate\Http\Request;
+use Minhbang\Kit\Extensions\DatatableBuilder as Builder;
+use Datatables;
 
 /**
  * Class BackendController
@@ -14,41 +16,61 @@ class BackendController extends BaseController
     use QuickUpdateActions;
 
     /**
-     * @return \Minhbang\File\Datatable
+     * @param \Minhbang\Kit\Extensions\DatatableBuilder $builder
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    protected function getDatatable()
+    public function index(Builder $builder)
     {
-        return $this->newClassInstance(config('file.datatable'), 'backend', trans('file::common.file'));
-    }
-
-    /**
-     * @return \Illuminate\View\View
-     */
-    public function index()
-    {
-        $this->getDatatable()->share();
         $this->buildHeading(
             trans('file::common.manage_title'),
             'fa-newspaper-o',
-            ['#' => trans('file::common.file')],
-            [
-                [
-                    '#',
-                    trans('file::common.add_new'),
-                    ['class' => 'add-new', 'type' => 'primary', 'size' => 'sm', 'icon' => 'plus-sign'],
-                ],
-            ]
+            ['#' => trans('file::common.file')]
         );
 
-        return view('file::backend.index');
+        $builder->ajax(route('backend.file.data'));
+        $html = $builder->columns([
+            ['data' => 'id', 'name' => 'id', 'title' => 'ID', 'class' => 'min-width text-center'],
+            [
+                'data'       => 'icon',
+                'name'       => 'icon',
+                'title'      => '',
+                'class'      => 'min-width',
+                'orderable'  => false,
+                'searchable' => false,
+            ],
+            [
+                'data'  => 'title',
+                'name'  => 'title',
+                'title' => trans('file::common.title'),
+                'class' => 'file-title',
+            ],
+        ])->addAction([
+            'data'  => 'actions',
+            'name'  => 'actions',
+            'title' => trans('common.actions'),
+            'class' => 'min-width',
+        ]);
+
+
+        return view('file::backend.index', compact('html'));
     }
 
     /**
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function data()
+    public function data(Request $request)
     {
-        return $this->getDatatable()->make(File::orderUpdated());
+        $query = File::query();
+        if ($request->has('filter_form')) {
+            $query = $query
+                ->searchWhereBetween('files.created_at', 'mb_date_vn2mysql')
+                ->searchWhereBetween('files.updated_at', 'mb_date_vn2mysql');
+        }
+
+        return Datatables::of($query)->setTransformer(new FileTransformer())->make(true);
     }
 
     /**
@@ -61,7 +83,7 @@ class BackendController extends BaseController
         $file = new File();
         $file->fill($request->all());
         $error = null;
-        if ( ! $file->title) {
+        if (!$file->title) {
             $error = trans('file::error.empty_title');
         } else {
             if ($file->fillFile($request)) {

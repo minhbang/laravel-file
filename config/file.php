@@ -1,16 +1,14 @@
 <?php
 return [
-    'add_route' => true,
+    'middleware' => ['web', 'role:sys.admin'],
     /**
-     * Thư mục 'gốc' lưu files, theo định dạng helper get_path()
+     * Thư mục 'gốc' lưu files, theo định dạng helper mb_get_path()
      */
-    'base_path' => 'storage:data/files',
+    'base_path'  => 'my_storage:files',
     /**
      * Thư mục lưu tạm, tự động xóa sau khoảng thời gian
      */
-    'temp_path' => 'storage:data/temp_files',
-
-    'datatable' => \Minhbang\File\Datatable::class,
+    'temp_path'  => 'my_storage:temp_files',
     /**
      * File css icon class
      */

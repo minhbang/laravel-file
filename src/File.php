@@ -81,7 +81,7 @@ class File extends Model
      */
     public function fileables($model)
     {
-        if ( ! is_string($model)) {
+        if (!is_string($model)) {
             $model = get_class($model);
         }
 
@@ -89,7 +89,7 @@ class File extends Model
     }
 
     /**
-     * @param \App\Http\Requests\Request|string $request
+     * @param \Request|string $request
      *
      * @return bool
      */
@@ -97,7 +97,7 @@ class File extends Model
     {
         if ($file = $request->file('name')) {
             $filename = xuuid() . '.' . strtolower($file->getClientOriginalExtension());
-            $file     = $file->move($this->path, $filename);
+            $file = $file->move($this->path, $filename);
             $this->performDeleteFile();
             $this->name = $filename;
             $this->mime = $file->getMimeType();
@@ -111,19 +111,11 @@ class File extends Model
     }
 
     /**
-     * @param string $filepath
-     */
-    public function fillFileFormPath($filepath)
-    {
-
-    }
-
-    /**
      * @return bool
      */
     public function performDeleteFile()
     {
-        return $this->exists && $this->name ? unlink($this->file_path) : false;
+        return $this->exists && $this->name ? unlink($this->getFilePathAttribute()) : false;
     }
 
     /**
@@ -134,7 +126,7 @@ class File extends Model
      */
     public function getPathAttribute()
     {
-        if ( ! $this->exists) {
+        if (!$this->exists) {
             $this->created_at = Carbon::now();
         }
 
@@ -147,7 +139,7 @@ class File extends Model
      */
     public function getFilePathAttribute()
     {
-        return "{$this->path}/{$this->name}";
+        return $this->getPathAttribute() . '/' . $this->name;
     }
 
     /**
@@ -165,7 +157,7 @@ class File extends Model
      */
     public function response()
     {
-        mb_file_response($this->file_path, $this->mime);
+        mb_file_response($this->getFilePathAttribute(), $this->mime);
     }
 
     public static function boot()

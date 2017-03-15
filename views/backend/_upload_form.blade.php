@@ -12,11 +12,12 @@
                     ]) !!}
                     <p class="help-block with-errors"></p>
                 </div>
+
                 <div class="form-group">
                     {!! Form::file("name", [
                     'class' => 'form-control filestyle',
                     'data-error' => trans('file::error.empty_file'),
-                    'data-buttonText' => trans('file::common.select_file'),
+                    'data-buttonText' => ' '.trans('file::common.select_file'),
                     'data-buttonName'=>"btn-white",
                     'data-size'=>"sm"
                     ]) !!}
@@ -31,13 +32,14 @@
                     <button type="reset" class="btn btn-sm btn-white cancel">
                         <i class="fa fa-close"></i> {{trans('common.cancel')}}
                     </button>
-                </div>
-                <div class="progress progress-small">
-                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0"
-                         aria-valuemin="0" aria-valuemax="100" style="width: 0%">
-                        <span class="sr-only">0%</span>
+                    <div class="progress progress-small" style="display: none">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0"
+                             aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                            <span class="sr-only">0%</span>
+                        </div>
                     </div>
                 </div>
+
             </div>
         </div>
         {!! Form::close() !!}

@@ -2,7 +2,7 @@
 return [
     'file'            => 'File',
     'manage_title'    => 'Quản lý File',
-    'list'            => 'Danh sách file <small>sắp xếp theo thời gian</small>',
+    'list'            => 'Danh sách file',
     'title'           => 'Tiêu đề',
     'name'            => 'File',
     'mime'            => 'Loại File',

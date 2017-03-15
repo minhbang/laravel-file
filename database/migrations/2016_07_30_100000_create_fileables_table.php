@@ -28,7 +28,7 @@ class CreateFileablesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('fileables');
+        Schema::dropIfExists('fileables');
     }
 
 }
