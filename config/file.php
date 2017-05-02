@@ -22,4 +22,14 @@ return [
         'rar'     => 'fa fa-file-zip-o',
         'default' => 'fa fa-file-o',
     ],
+    // Định nghĩa menus cho ebook
+    'menus'          => [
+        'backend.sidebar.content.file' => [
+            'priority' => 5,
+            'url'      => 'route:backend.file.index',
+            'label'    => 'trans:file::common.manage_title',
+            'icon'     => 'fa-newspaper-o',
+            'active'   => 'backend/file*',
+        ],
+    ],
 ];

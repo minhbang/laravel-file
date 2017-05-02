@@ -2,6 +2,7 @@
     <div class="ibox-title"><h5></h5></div>
     <div class="ibox-content">
         {!! Form::open(['id' => 'form-file', 'files' => true]) !!}
+        {!! Form::hidden('tmp', isset($tmp) ? $tmp : 0) !!}
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">

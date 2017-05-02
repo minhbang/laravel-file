@@ -22,36 +22,35 @@ use Minhbang\Kit\Traits\Model\SearchQuery;
  * @property-read string $path
  * @property-read string $file_path
  * @property-read string $ext
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File whereTitle($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File whereName($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File whereMime($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File whereSize($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File whereHit($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\Kit\Extensions\Model except($id = null)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\Kit\Extensions\Model whereAttributes($attributes)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\Kit\Extensions\Model findText($column, $text)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File orderCreated($direction = 'desc')
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File orderUpdated($direction = 'desc')
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File period($start = null, $end = null, $field = 'created_at', $end_if_day = false, $is_month = false)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File today($field = 'created_at')
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File yesterday($same_time = false, $field = 'created_at')
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File thisWeek($field = 'created_at')
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File thisMonth($field = 'created_at')
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File searchKeyword($keyword, $columns = null)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File whereId( $value )
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File whereTitle( $value )
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File whereName( $value )
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File whereMime( $value )
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File whereSize( $value )
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File whereHit( $value )
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File whereCreatedAt( $value )
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File whereUpdatedAt( $value )
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\Kit\Extensions\Model except( $id = null )
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\Kit\Extensions\Model whereAttributes( $attributes )
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\Kit\Extensions\Model findText( $column, $text )
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File orderCreated( $direction = 'desc' )
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File orderUpdated( $direction = 'desc' )
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File period( $start = null, $end = null, $field = 'created_at', $end_if_day = false, $is_month = false )
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File today( $field = 'created_at' )
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File yesterday( $same_time = false, $field = 'created_at' )
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File thisWeek( $field = 'created_at' )
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File thisMonth( $field = 'created_at' )
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\File\File searchKeyword( $keyword, $columns = null )
  * @mixin \Eloquent
  */
-class File extends Model
-{
+class File extends Model {
     use SearchQuery;
     use DatetimeQuery;
     use PresentableTrait;
     protected $presenter = FilePresenter::class;
     protected $table = 'files';
-    protected $fillable = ['title'];
-    protected $searchable = ['title'];
+    protected $fillable = [ 'title', 'tmp' ];
+    protected $searchable = [ 'title' ];
     /**
      * Thư mục 'base' của tất cả các file
      *
@@ -64,11 +63,10 @@ class File extends Model
      *
      * @param array $attributes
      */
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
-        if (is_null(static::$base_path)) {
-            static::$base_path = mb_get_path(config('file.base_path'));
+    public function __construct( array $attributes = [] ) {
+        parent::__construct( $attributes );
+        if ( is_null( static::$base_path ) ) {
+            static::$base_path = mb_get_path( config( 'file.base_path' ) );
         }
     }
 
@@ -79,13 +77,12 @@ class File extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
-    public function fileables($model)
-    {
-        if (!is_string($model)) {
-            $model = get_class($model);
+    public function fileables( $model ) {
+        if ( ! is_string( $model ) ) {
+            $model = get_class( $model );
         }
 
-        return $this->morphedByMany($model, 'fileable');
+        return $this->morphedByMany( $model, 'fileable' );
     }
 
     /**
@@ -93,11 +90,10 @@ class File extends Model
      *
      * @return bool
      */
-    public function fillFile($request)
-    {
-        if ($file = $request->file('name')) {
-            $filename = xuuid() . '.' . strtolower($file->getClientOriginalExtension());
-            $file = $file->move($this->path, $filename);
+    public function fillFile( $request ) {
+        if ( $file = $request->file( 'name' ) ) {
+            $filename = xuuid() . '.' . strtolower( $file->getClientOriginalExtension() );
+            $file = $file->move( $this->path, $filename );
             $this->performDeleteFile();
             $this->name = $filename;
             $this->mime = $file->getMimeType();
@@ -113,9 +109,8 @@ class File extends Model
     /**
      * @return bool
      */
-    public function performDeleteFile()
-    {
-        return $this->exists && $this->name ? unlink($this->getFilePathAttribute()) : false;
+    public function performDeleteFile() {
+        return $this->exists && $this->name ? unlink( $this->getFilePathAttribute() ) : false;
     }
 
     /**
@@ -124,21 +119,19 @@ class File extends Model
      *
      * @return string
      */
-    public function getPathAttribute()
-    {
-        if (!$this->exists) {
+    public function getPathAttribute() {
+        if ( ! $this->exists ) {
             $this->created_at = Carbon::now();
         }
 
-        return mb_mkdir(static::$base_path, $this->created_at);
+        return mb_mkdir( static::$base_path, $this->created_at );
     }
 
     /**
      * Đường dẫn đầy đủ của file
      * getter $this->file_path
      */
-    public function getFilePathAttribute()
-    {
+    public function getFilePathAttribute() {
         return $this->getPathAttribute() . '/' . $this->name;
     }
 
@@ -147,26 +140,50 @@ class File extends Model
      *
      * @return string
      */
-    public function getExtAttribute()
-    {
-        return substr($this->name, strrpos($this->name, '.') + 1);
+    public function getExtAttribute() {
+        return substr( $this->name, strrpos( $this->name, '.' ) + 1 );
     }
 
     /**
      * Xuất file về browser
      */
-    public function response()
-    {
-        mb_file_response($this->getFilePathAttribute(), $this->mime);
+    public function response() {
+        mb_file_response( $this->getFilePathAttribute(), $this->mime );
     }
 
-    public static function boot()
-    {
+    /**
+     * @param bool $preview
+     *
+     * @return array
+     */
+    public function forReturn( $preview = true ) {
+        $result = $this->toArray();
+        $result['title'] = $this->present()->title;
+        if ( $preview ) {
+            $result['title'] = '<a target="_blank" href="' . route( 'backend.file.preview', [ 'file' => $this->id ] ) . '">' . $result['title'] . '</a>';
+        }
+
+        return $result;
+    }
+
+    public static function boot() {
         parent::boot();
         // File events
-        static::deleting(function (File $file) {
+        static::deleting( function ( File $file ) {
             $file->performDeleteFile();
-            DB::table('fileables')->where('file_id', $file->id)->delete();
-        });
+            DB::table( 'fileables' )->where( 'file_id', $file->id )->delete();
+        } );
+    }
+
+    /**
+     * Xóa hết các file tạm, quá hạn $h giờ
+     *
+     * @param int $h
+     */
+    public static function emptyTmp( $h = 1 ) {
+        $files = static::where( 'tmp', 1 )->where( 'created_at', '<', Carbon::now()->subHour( $h )->toDateTimeString() )->get();
+        foreach ( $files as $file ) {
+            $file->delete();
+        }
     }
 }

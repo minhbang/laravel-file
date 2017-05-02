@@ -11,8 +11,7 @@ use Datatables;
  *
  * @package Minhbang\File
  */
-class BackendController extends BaseController
-{
+class BackendController extends BaseController {
     use QuickUpdateActions;
 
     /**
@@ -20,40 +19,39 @@ class BackendController extends BaseController
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(Builder $builder)
-    {
+    public function index( Builder $builder ) {
         $this->buildHeading(
-            trans('file::common.manage_title'),
+            trans( 'file::common.manage_title' ),
             'fa-newspaper-o',
-            ['#' => trans('file::common.file')]
+            [ '#' => trans( 'file::common.file' ) ]
         );
 
-        $builder->ajax(route('backend.file.data'));
-        $html = $builder->columns([
-            ['data' => 'id', 'name' => 'id', 'title' => 'ID', 'class' => 'min-width text-center'],
+        $builder->ajax( route( 'backend.file.data' ) );
+        $html = $builder->columns( [
+            [ 'data' => 'id', 'name' => 'id', 'title' => 'ID', 'class' => 'min-width text-center' ],
             [
-                'data'       => 'icon',
-                'name'       => 'icon',
-                'title'      => '',
-                'class'      => 'min-width',
-                'orderable'  => false,
+                'data' => 'icon',
+                'name' => 'icon',
+                'title' => '',
+                'class' => 'min-width',
+                'orderable' => false,
                 'searchable' => false,
             ],
             [
-                'data'  => 'title',
-                'name'  => 'title',
-                'title' => trans('file::common.title'),
+                'data' => 'title',
+                'name' => 'title',
+                'title' => trans( 'file::common.title' ),
                 'class' => 'file-title',
             ],
-        ])->addAction([
-            'data'  => 'actions',
-            'name'  => 'actions',
-            'title' => trans('common.actions'),
+        ] )->addAction( [
+            'data' => 'actions',
+            'name' => 'actions',
+            'title' => trans( 'common.actions' ),
             'class' => 'min-width',
-        ]);
+        ] );
 
 
-        return view('file::backend.index', compact('html'));
+        return view( 'file::backend.index', compact( 'html' ) );
     }
 
     /**
@@ -61,42 +59,44 @@ class BackendController extends BaseController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function data(Request $request)
-    {
-        $query = File::query();
-        if ($request->has('filter_form')) {
+    public function data( Request $request ) {
+        File::emptyTmp();
+        $query = File::where( 'tmp', 0 );
+        if ( $request->has( 'filter_form' ) ) {
             $query = $query
-                ->searchWhereBetween('files.created_at', 'mb_date_vn2mysql')
-                ->searchWhereBetween('files.updated_at', 'mb_date_vn2mysql');
+                ->searchWhereBetween( 'files.created_at', 'mb_date_vn2mysql' )
+                ->searchWhereBetween( 'files.updated_at', 'mb_date_vn2mysql' );
         }
 
-        return Datatables::of($query)->setTransformer(new FileTransformer())->make(true);
+        return Datatables::of( $query )->setTransformer( new FileTransformer() )->make( true );
     }
 
     /**
+     * Todo: File validation (mime, size...)
+     *
      * @param \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
-    {
+    public function store( Request $request ) {
         $file = new File();
-        $file->fill($request->all());
+        $file->fill( $request->all() );
         $error = null;
-        if (!$file->title) {
-            $error = trans('file::error.empty_title');
+        if ( ! $file->title ) {
+            $error = trans( 'file::error.empty_title' );
         } else {
-            if ($file->fillFile($request)) {
+            if ( $file->fillFile( $request ) ) {
                 $file->save();
             } else {
-                $error = trans('file::error.empty_file');
+                $error = trans( 'file::error.empty_file' );
             }
         }
 
         return response()->json(
             [
-                'type'    => $error ? 'error' : 'success',
-                'content' => $error ?: trans('file::common.upload_success'),
+                'type' => $error ? 'error' : 'success',
+                'content' => $error ?: trans( 'file::common.upload_success' ),
+                'file' => $error ? null : $file->forReturn(),
             ]
         );
     }
@@ -106,16 +106,14 @@ class BackendController extends BaseController
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function show(File $file)
-    {
-        return view('file::backend.show', compact('file'));
+    public function show( File $file ) {
+        return view( 'file::backend.show', compact( 'file' ) );
     }
 
     /**
      * @param \Minhbang\File\File $file
      */
-    public function preview(File $file)
-    {
+    public function preview( File $file ) {
         $file->response();
     }
 
@@ -125,19 +123,19 @@ class BackendController extends BaseController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, File $file)
-    {
+    public function update( Request $request, File $file ) {
         $error = null;
-        if ($file->fillFile($request)) {
+        if ( $file->fillFile( $request ) ) {
             $file->save();
         } else {
-            $error = trans('file::error.empty_file');
+            $error = trans( 'file::error.empty_file' );
         }
 
         return response()->json(
             [
-                'type'    => $error ? 'error' : 'success',
-                'content' => $error ?: trans('file::common.replace_success'),
+                'type' => $error ? 'error' : 'success',
+                'content' => $error ?: trans( 'file::common.replace_success' ),
+                'file' => $error ? null : $file->forReturn(),
             ]
         );
     }
@@ -147,14 +145,13 @@ class BackendController extends BaseController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(File $file)
-    {
+    public function destroy( File $file ) {
         $file->delete();
 
         return response()->json(
             [
-                'type'    => 'success',
-                'content' => trans('common.delete_object_success', ['name' => trans('file::common.file')]),
+                'type' => 'success',
+                'content' => trans( 'common.delete_object_success', [ 'name' => trans( 'file::common.file' ) ] ),
             ]
         );
     }
@@ -164,12 +161,11 @@ class BackendController extends BaseController
      *
      * @return array
      */
-    protected function quickUpdateAttributes()
-    {
+    protected function quickUpdateAttributes() {
         return [
             'title' => [
                 'rules' => 'required|max:255',
-                'label' => trans('file::common.title'),
+                'label' => trans( 'file::common.title' ),
             ],
         ];
     }
