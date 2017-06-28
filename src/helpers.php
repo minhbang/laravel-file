@@ -67,5 +67,6 @@ if (!function_exists('mb_file_response')) {
         header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
         header('Expires: 0');
         readfile($file);
+        exit();
     }
 }

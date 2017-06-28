@@ -30,22 +30,22 @@ class BackendController extends BaseController {
         $html = $builder->columns( [
             [ 'data' => 'id', 'name' => 'id', 'title' => 'ID', 'class' => 'min-width text-center' ],
             [
-                'data' => 'icon',
-                'name' => 'icon',
-                'title' => '',
-                'class' => 'min-width',
-                'orderable' => false,
+                'data'       => 'icon',
+                'name'       => 'icon',
+                'title'      => '',
+                'class'      => 'min-width',
+                'orderable'  => false,
                 'searchable' => false,
             ],
             [
-                'data' => 'title',
-                'name' => 'title',
+                'data'  => 'title',
+                'name'  => 'title',
                 'title' => trans( 'file::common.title' ),
                 'class' => 'file-title',
             ],
         ] )->addAction( [
-            'data' => 'actions',
-            'name' => 'actions',
+            'data'  => 'actions',
+            'name'  => 'actions',
             'title' => trans( 'common.actions' ),
             'class' => 'min-width',
         ] );
@@ -80,23 +80,13 @@ class BackendController extends BaseController {
      */
     public function store( Request $request ) {
         $file = new File();
-        $file->fill( $request->all() );
-        $error = null;
-        if ( ! $file->title ) {
-            $error = trans( 'file::error.empty_title' );
-        } else {
-            if ( $file->fillFile( $request ) ) {
-                $file->save();
-            } else {
-                $error = trans( 'file::error.empty_file' );
-            }
-        }
+        $error = $file->fillRequest( $request );
 
         return response()->json(
             [
-                'type' => $error ? 'error' : 'success',
+                'type'    => $error ? 'error' : 'success',
                 'content' => $error ?: trans( 'file::common.upload_success' ),
-                'file' => $error ? null : $file->forReturn(),
+                'file'    => $error ? null : $file->forReturn(),
             ]
         );
     }
@@ -133,9 +123,9 @@ class BackendController extends BaseController {
 
         return response()->json(
             [
-                'type' => $error ? 'error' : 'success',
+                'type'    => $error ? 'error' : 'success',
                 'content' => $error ?: trans( 'file::common.replace_success' ),
-                'file' => $error ? null : $file->forReturn(),
+                'file'    => $error ? null : $file->forReturn(),
             ]
         );
     }
@@ -150,7 +140,7 @@ class BackendController extends BaseController {
 
         return response()->json(
             [
-                'type' => 'success',
+                'type'    => 'success',
                 'content' => trans( 'common.delete_object_success', [ 'name' => trans( 'file::common.file' ) ] ),
             ]
         );

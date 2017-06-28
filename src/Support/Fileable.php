@@ -32,11 +32,11 @@ trait Fileable {
     }
 
     /**
-     * @param string $files
+     * @param string|integer|array $files
      */
     public function fillFiles( $files ) {
         if ( $files ) {
-            $files = explode( ',', $files );
+            $files = is_string( $files ) ? explode( ',', $files ) : (array) $files;
             File::whereIn( 'id', $files )->update( [ 'tmp' => 0 ] );
             if ( $this->exists ) {
                 $changes = $this->files()->sync( $files );

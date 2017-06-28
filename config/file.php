@@ -1,6 +1,6 @@
 <?php
 return [
-    'middleware' => ['web', 'role:sys.admin'],
+    'middleware' => ['web', 'role:sys.admin|thu_vien.*'],
     /**
      * Thư mục 'gốc' lưu files, theo định dạng helper mb_get_path()
      */

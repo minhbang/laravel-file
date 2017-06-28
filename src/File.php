@@ -107,6 +107,29 @@ class File extends Model {
     }
 
     /**
+     * Nếu có lỗi, trả về msg
+     *
+     * @param \Request|string $request
+     *
+     * @return string|null
+     */
+    public function fillRequest( $request ) {
+        $this->fill( $request->all() );
+        $error = null;
+        if ( ! $this->title ) {
+            $error = trans( 'file::error.empty_title' );
+        } else {
+            if ( $this->fillFile( $request ) ) {
+                $this->save();
+            } else {
+                $error = trans( 'file::error.empty_file' );
+            }
+        }
+
+        return $error;
+    }
+
+    /**
      * @return bool
      */
     public function performDeleteFile() {
@@ -152,15 +175,16 @@ class File extends Model {
     }
 
     /**
-     * @param bool $preview
+     * @param string $viewRoute
+     * @param array $params
      *
      * @return array
      */
-    public function forReturn( $preview = true ) {
+    public function forReturn( $viewRoute = 'backend.file.preview', $params = [] ) {
         $result = $this->toArray();
         $result['title'] = $this->present()->title;
-        if ( $preview ) {
-            $result['title'] = '<a target="_blank" href="' . route( 'backend.file.preview', [ 'file' => $this->id ] ) . '">' . $result['title'] . '</a>';
+        if ( $viewRoute ) {
+            $result['title'] = '<a target="_blank" href="' . route( $viewRoute, [ 'file' => $this->id ] + $params ) . '">' . $result['title'] . '</a>';
         }
 
         return $result;
