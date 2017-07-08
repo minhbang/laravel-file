@@ -1,4 +1,4 @@
-@extends('backend.layouts.modal')
+@extends('kit::backend.layouts.modal')
 @section('content')
     <h3>{{trans('common.attributes')}}</h3>
     <table class="table table-hover table-striped table-bordered table-detail">

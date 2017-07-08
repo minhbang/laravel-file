@@ -1,4 +1,4 @@
-@extends('backend.layouts.master')
+@extends('kit::backend.layouts.master')
 @section('content')
     @include("file::backend._upload_form")
     <div class="ibox ibox-table">
