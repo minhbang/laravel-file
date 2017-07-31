@@ -19,6 +19,13 @@ trait Fileable {
         return $this->morphToMany( File::class, 'fileable' )->orderBy( 'fileables.position' );
     }
 
+    /**
+     * @return \Minhbang\File\File
+     */
+    public function firstFile() {
+        return $this->files->first();
+    }
+
     public static function bootFileable() {
         static::deleting(
             function ( $model ) {

@@ -6,6 +6,7 @@ use Minhbang\Kit\Extensions\Model;
 use Minhbang\Kit\Traits\Model\DatetimeQuery;
 use DB;
 use Minhbang\Kit\Traits\Model\SearchQuery;
+use Imagick;
 
 /**
  * Class File
@@ -209,5 +210,27 @@ class File extends Model {
         foreach ( $files as $file ) {
             $file->delete();
         }
+    }
+
+    /**
+     * Lấy Hình ảnh trang đầu của file PDF
+     *
+     * @param int $resolution
+     * @param string $format
+     *
+     * @return \Imagick|null
+     */
+    public function pdfThumbnail( $resolution = 72, $format = 'png' ) {
+        if ( ! $this->exists || $this->mime != 'application/pdf' ) {
+            return null;
+        }
+        $imagick = new Imagick();
+        $imagick->setResolution( $resolution, $resolution );
+        $imagick->setFormat( $format );
+        $imagick->readImage( sprintf( '%s[%s]', $this->file_path, 0 ) );
+        $imagick->mergeImageLayers( Imagick::LAYERMETHOD_FLATTEN );
+        $imagick->trimImage( 0.1 );
+
+        return $imagick;
     }
 }
