@@ -1,5 +1,5 @@
 <?php
-if (!function_exists('mb_get_path')) {
+if (! function_exists('mb_get_path')) {
     /**
      * - Nếu có 'location:path', sử dụng helper path functions,
      *   vd: 'storage:data/files' => storage_path('data/files')
@@ -16,7 +16,7 @@ if (!function_exists('mb_get_path')) {
         if (strpos($path, ':') !== false) {
             list($location, $path) = explode(':', $path, 2);
             $path = str_is("my_*", $location) ?
-                config('app.paths.' . substr($location, 3)) . '/' . $path :
+                config('app.paths.'.substr($location, 3)).'/'.$path :
                 call_user_func("{$location}_path", $path);
             if (file_exists($path)) {
                 $path = realpath($path);
@@ -27,7 +27,7 @@ if (!function_exists('mb_get_path')) {
     }
 }
 
-if (!function_exists('mb_mkdir')) {
+if (! function_exists('mb_mkdir')) {
     /**
      * Tạo thư mục, tùy chọn theo thời gian, vd: base/path/2016/7
      *
@@ -40,11 +40,11 @@ if (!function_exists('mb_mkdir')) {
      */
     function mb_mkdir($dir, $time = null, $format = 'Y/m', $mode = 0755)
     {
-        if (!is_null($time)) {
-            $dir = rtrim($dir, '/') . '/' . $time->format($format);
+        if (! is_null($time)) {
+            $dir = rtrim($dir, '/').'/'.$time->format($format);
         }
 
-        if (!is_dir($dir)) {
+        if (! is_dir($dir)) {
             mkdir($dir, $mode, true);
         }
 
@@ -52,17 +52,18 @@ if (!function_exists('mb_mkdir')) {
     }
 }
 
-if (!function_exists('mb_file_response')) {
+if (! function_exists('mb_file_response')) {
     /**
      * Xuất file về browser
      *
      * @param string $file
      * @param string $mime
+     * @param null $filename
      */
-    function mb_file_response($file, $mime)
+    function mb_file_response($file, $mime, $filename = null)
     {
         header("Content-type: {$mime}");
-        header('Content-Disposition: inline');
+        header('Content-Disposition: inline'.($filename ? '; filename="'.$filename.'"' : ''));
         header('Content-Transfer-Encoding: binary');
         header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
         header('Expires: 0');

@@ -19,7 +19,7 @@ class CreateFilesTable extends Migration {
             $table->integer( 'size' )->unsigned();
             $table->integer( 'hit' )->unsigned()->default( 0 );
             $table->tinyInteger( 'tmp' )->default( 0 );
-            $table->Timestamps();
+            $table->timestamps();
         } );
     }
 

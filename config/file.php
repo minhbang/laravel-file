@@ -22,7 +22,7 @@ return [
         'rar'     => 'fa fa-file-zip-o',
         'default' => 'fa fa-file-o',
     ],
-    // Định nghĩa menus cho ebook
+    // Định nghĩa menus cho file
     'menus'          => [
         'backend.sidebar.content.file' => [
             'priority' => 5,
