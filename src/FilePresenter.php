@@ -11,7 +11,8 @@ use Laracasts\Presenter\Presenter;
  * @property \Minhbang\File\File $entity
  * @package Minhbang\Kit\Traits\Presenter
  */
-class FilePresenter extends Presenter {
+class FilePresenter extends Presenter
+{
     /**
      * @var array
      */
@@ -22,10 +23,11 @@ class FilePresenter extends Presenter {
      *
      * @param $entity
      */
-    public function __construct( $entity ) {
-        parent::__construct( $entity );
-        if ( is_null( static::$icons ) ) {
-            static::$icons = config( 'file.icons' );
+    public function __construct($entity)
+    {
+        parent::__construct($entity);
+        if (is_null(static::$icons)) {
+            static::$icons = config('file.icons');
         }
     }
 
@@ -34,11 +36,12 @@ class FilePresenter extends Presenter {
      *
      * @return string
      */
-    public function icon() {
+    public function icon()
+    {
         $ext = $this->entity->ext;
         $class = null;
-        foreach ( static::$icons as $pattern => $icon ) {
-            if ( str_is( $pattern, $ext ) ) {
+        foreach (static::$icons as $pattern => $icon) {
+            if (str_is($pattern, $ext)) {
                 $class = $icon;
                 break;
             }
@@ -53,8 +56,9 @@ class FilePresenter extends Presenter {
      *
      * @return string
      */
-    public function size() {
-        return mb_format_bytes( $this->entity->size, 1 );
+    public function size()
+    {
+        return mb_format_bytes($this->entity->size, 1);
     }
 
     /**
@@ -62,10 +66,15 @@ class FilePresenter extends Presenter {
      *
      * @return string
      */
-    public function title( $attribute = 'title' ) {
-        $title = $attribute ? $this->entity->{$attribute} . ' — ' : '';
+    public function title($attribute = 'title')
+    {
+        if ($attribute == 'Download') {
+            return "Download — {$this->icon()} {$this->size()}";
+        } else {
+            $title = $attribute ? $this->entity->{$attribute}.' — ' : '';
 
-        return $this->icon() . ' ' . $title . $this->size();
+            return $this->icon().' '.$title.$this->size();
+        }
     }
 
     /**
@@ -76,10 +85,11 @@ class FilePresenter extends Presenter {
      *
      * @return string
      */
-    public function link( $route, $params = [], $attribute = 'title', $options = [] ) {
+    public function link($route, $params = [], $attribute = 'title', $options = [])
+    {
         $params['file'] = $this->entity->id;
 
-        return '<a target="_blank" href="' . route( $route, $params ) . '"
-                   ' . Html::attributes( $options ) . '>' . $this->title( $attribute ) . '</a>';
+        return '<a target="_blank" href="'.route($route, $params).'"
+                   '.Html::attributes($options).'>'.$this->title($attribute).'</a>';
     }
 }

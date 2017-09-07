@@ -24,7 +24,7 @@ return [
     ],
     // Định nghĩa menus cho file
     'menus'          => [
-        'backend.sidebar.content.file' => [
+        'backend.sidebar.media.file' => [
             'priority' => 5,
             'url'      => 'route:backend.file.index',
             'label'    => 'trans:file::common.manage_title',
