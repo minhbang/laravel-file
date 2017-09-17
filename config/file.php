@@ -30,6 +30,7 @@ return [
             'label'    => 'trans:file::common.manage_title',
             'icon'     => 'fa-newspaper-o',
             'active'   => 'backend/file*',
+            'role' => 'sys.admin',
         ],
     ],
 ];
