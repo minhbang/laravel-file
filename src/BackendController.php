@@ -1,6 +1,6 @@
 <?php namespace Minhbang\File;
 
-use Datatables;
+use DataTables;
 use Illuminate\Http\Request;
 use Minhbang\Kit\Extensions\BackendController as BaseController;
 use Minhbang\Kit\Extensions\DatatableBuilder as Builder;
@@ -64,7 +64,7 @@ class BackendController extends BaseController
             $query = $query->searchWhereBetween('files.created_at', 'mb_date_vn2mysql')->searchWhereBetween('files.updated_at', 'mb_date_vn2mysql');
         }
 
-        return Datatables::of($query)->setTransformer(new FileTransformer())->make(true);
+        return DataTables::of($query)->setTransformer(new FileTransformer())->make(true);
     }
 
     /**
