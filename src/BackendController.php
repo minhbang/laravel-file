@@ -4,6 +4,7 @@ use Datatables;
 use Illuminate\Http\Request;
 use Minhbang\Kit\Extensions\BackendController as BaseController;
 use Minhbang\Kit\Extensions\DatatableBuilder as Builder;
+use Minhbang\Kit\Traits\Controller\CheckDatatablesInput;
 use Minhbang\Kit\Traits\Controller\QuickUpdateActions;
 
 /**
@@ -14,6 +15,7 @@ use Minhbang\Kit\Traits\Controller\QuickUpdateActions;
 class BackendController extends BaseController
 {
     use QuickUpdateActions;
+    use CheckDatatablesInput;
 
     /**
      * @param \Minhbang\Kit\Extensions\DatatableBuilder $builder
@@ -58,10 +60,12 @@ class BackendController extends BaseController
      */
     public function data(Request $request)
     {
+        $this->filterDatatablesParametersOrAbort($request);
         File::emptyTmp();
         $query = File::where('tmp', 0);
         if ($request->has('filter_form')) {
-            $query = $query->searchWhereBetween('files.created_at', 'mb_date_vn2mysql')->searchWhereBetween('files.updated_at', 'mb_date_vn2mysql');
+            $query =
+                $query->searchWhereBetween('files.created_at', 'mb_date_vn2mysql')->searchWhereBetween('files.updated_at', 'mb_date_vn2mysql');
         }
 
         return Datatables::of($query)->setTransformer(new FileTransformer())->make(true);
