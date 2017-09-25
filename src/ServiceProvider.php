@@ -24,7 +24,7 @@ class ServiceProvider extends BaseServiceProvider
         $this->loadTranslationsFrom(__DIR__ . '/../lang', 'file');
         $this->loadViewsFrom(__DIR__ . '/../views', 'file');
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
-        $this->loadRoutesFrom(__DIR__ . '/routes.php');
+
         $this->publishes(
             [
                 __DIR__ . '/../views'           => base_path('resources/views/vendor/file'),
@@ -37,6 +37,8 @@ class ServiceProvider extends BaseServiceProvider
         $router->pattern('file', '[0-9]+');
         // model bindings
         $router->model('file', \Minhbang\File\File::class);
+        $this->loadRoutesFrom(__DIR__ . '/routes.php');
+
         MenuManager::addItems( config( 'file.menus' ) );
     }
 
