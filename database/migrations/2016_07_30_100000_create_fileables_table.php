@@ -30,5 +30,4 @@ class CreateFileablesTable extends Migration
     {
         Schema::dropIfExists('fileables');
     }
-
 }
