@@ -1,5 +1,5 @@
 <?php
-if (! function_exists('mb_get_path')) {
+if (!function_exists('mb_get_path')) {
     /**
      * - Nếu có 'location:path', sử dụng helper path functions,
      *   vd: 'storage:data/files' => storage_path('data/files')
@@ -15,9 +15,13 @@ if (! function_exists('mb_get_path')) {
     {
         if (strpos($path, ':') !== false) {
             list($location, $path) = explode(':', $path, 2);
-            $path = str_is("my_*", $location) ?
-                config('app.paths.'.substr($location, 3)).'/'.$path :
-                call_user_func("{$location}_path", $path);
+            if (str_is("my_*", $location)) {
+                $root = config('app.paths.' . substr($location, 3));
+                abort_if(is_null($root), 500, 'mb_get_path: path name not defined!');
+                $path = $root . str_start($path, '/');
+            } else {
+                $path = call_user_func("{$location}_path", $path);
+            }
             if (file_exists($path)) {
                 $path = realpath($path);
             }
@@ -27,7 +31,29 @@ if (! function_exists('mb_get_path')) {
     }
 }
 
-if (! function_exists('mb_mkdir')) {
+if (!function_exists('my_upload_path')) {
+    /**
+     * @param string $path
+     * @return string
+     */
+    function my_upload_path($path = null)
+    {
+        return config('app.paths.upload') . str_start($path, '/');
+    }
+}
+
+if (!function_exists('my_storage_path')) {
+    /**
+     * @param string $path
+     * @return string
+     */
+    function my_storage_path($path = null)
+    {
+        return config('app.paths.storage') . str_start($path, '/');
+    }
+}
+
+if (!function_exists('mb_mkdir')) {
     /**
      * Tạo thư mục, tùy chọn theo thời gian, vd: base/path/2016/7
      *
@@ -40,11 +66,11 @@ if (! function_exists('mb_mkdir')) {
      */
     function mb_mkdir($dir, $time = null, $format = 'Y/m', $mode = 0755)
     {
-        if (! is_null($time)) {
-            $dir = rtrim($dir, '/').'/'.$time->format($format);
+        if (!is_null($time)) {
+            $dir = rtrim($dir, '/') . '/' . $time->format($format);
         }
 
-        if (! is_dir($dir)) {
+        if (!is_dir($dir)) {
             mkdir($dir, $mode, true);
         }
 
@@ -52,7 +78,7 @@ if (! function_exists('mb_mkdir')) {
     }
 }
 
-if (! function_exists('mb_file_response')) {
+if (!function_exists('mb_file_response')) {
     /**
      * Xuất file về browser
      *
@@ -63,7 +89,7 @@ if (! function_exists('mb_file_response')) {
     function mb_file_response($file, $mime, $filename = null)
     {
         header("Content-type: {$mime}");
-        header('Content-Disposition: inline'.($filename ? '; filename="'.$filename.'"' : ''));
+        header('Content-Disposition: inline' . ($filename ? '; filename="' . $filename . '"' : ''));
         header('Content-Transfer-Encoding: binary');
         header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
         header('Expires: 0');
