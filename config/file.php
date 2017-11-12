@@ -4,11 +4,11 @@ return [
     /**
      * Thư mục 'gốc' lưu files, theo định dạng helper mb_get_path()
      */
-    'base_path'  => 'my_storage:files',
+    'base_path'  => 'data:files',
     /**
      * Thư mục lưu tạm, tự động xóa sau khoảng thời gian
      */
-    'temp_path'  => 'my_storage:temp_files',
+    'temp_path'  => 'data:tmp',
     /**
      * File css icon class
      */

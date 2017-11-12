@@ -3,8 +3,8 @@ if (!function_exists('mb_get_path')) {
     /**
      * - Nếu có 'location:path', sử dụng helper path functions,
      *   vd: 'storage:data/files' => storage_path('data/files')
-     *   location = app | base | config | database | public | storage | resource
-     *   Đặc biệt location = my_<$path_name>, thì sử dụng config("app.paths.{$path_name}")
+     *   location = app | base | config | database | public | storage | resource ...
+     *   My location: upload | data
      * - Ngược lại, path bình thường
      *
      * @param $path
@@ -15,13 +15,7 @@ if (!function_exists('mb_get_path')) {
     {
         if (strpos($path, ':') !== false) {
             list($location, $path) = explode(':', $path, 2);
-            if (str_is("my_*", $location)) {
-                $root = config('app.paths.' . substr($location, 3));
-                abort_if(is_null($root), 500, 'mb_get_path: path name not defined!');
-                $path = $root . str_start($path, '/');
-            } else {
-                $path = call_user_func("{$location}_path", $path);
-            }
+            $path = call_user_func("{$location}_path", $path);
             if (file_exists($path)) {
                 $path = realpath($path);
             }
@@ -31,25 +25,29 @@ if (!function_exists('mb_get_path')) {
     }
 }
 
-if (!function_exists('my_upload_path')) {
+if (!function_exists('upload_path')) {
     /**
      * @param string $path
      * @return string
      */
-    function my_upload_path($path = null)
+    function upload_path($path = '')
     {
-        return config('app.paths.upload') . str_start($path, '/');
+        $root = config('filesystems.disks.upload.root');
+        abort_if(is_null($root), 500, 'filesystems: Upload disk undefined!');
+        return $root . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
 }
 
-if (!function_exists('my_storage_path')) {
+if (!function_exists('data_path')) {
     /**
      * @param string $path
      * @return string
      */
-    function my_storage_path($path = null)
+    function data_path($path = '')
     {
-        return config('app.paths.storage') . str_start($path, '/');
+        $root = config('filesystems.disks.data.root');
+        abort_if(is_null($root), 500, 'filesystems: Upload disk undefined!');
+        return $root . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
 }
 

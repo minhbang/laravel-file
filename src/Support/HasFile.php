@@ -3,7 +3,7 @@
 use Minhbang\File\File;
 
 /**
- * Dùng cho các model gắn với MỘT file
+ * Dùng cho các model gắn với MỘT file, có attribute $file_id
  * Trait HasFile
  *
  * @property int $file_id

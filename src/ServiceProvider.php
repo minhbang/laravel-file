@@ -3,7 +3,6 @@ namespace Minhbang\File;
 
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
-use MenuManager;
 
 /**
  * Class ServiceProvider
@@ -39,7 +38,9 @@ class ServiceProvider extends BaseServiceProvider
         $router->model('file', \Minhbang\File\File::class);
         $this->loadRoutesFrom(__DIR__ . '/routes.php');
 
-        MenuManager::addItems( config( 'file.menus' ) );
+        if ($this->app->has('menu-manager')) {
+            app('menu-manager')->addItems(config('file.menus'));
+        }
     }
 
     /**
