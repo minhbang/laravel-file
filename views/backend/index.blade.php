@@ -3,11 +3,11 @@
     @include("file::backend._upload_form")
     <div class="ibox ibox-table">
         <div class="ibox-title">
-            <h5>{!! trans('file::common.list') !!}</h5>
+            <h5>{!! __('File list') !!}</h5>
             <div class="buttons">
-                {!! Html::linkButton('#', trans('common.filter'), ['class'=>'advanced_filter_collapse','type'=>'info', 'size'=>'xs', 'icon' => 'filter']) !!}
-                {!! Html::linkButton('#', trans('common.all'), ['class'=>'advanced_filter_clear', 'type'=>'warning', 'size'=>'xs', 'icon' => 'list']) !!}
-                {!! Html::linkButton('#', trans('file::common.add_new'), ['class'=>'add-new', 'type'=>'primary', 'size'=>'xs', 'icon' => 'upload']) !!}
+                {!! Html::linkButton('#', __('Filter'), ['class'=>'advanced_filter_collapse','type'=>'info', 'size'=>'xs', 'icon' => 'filter']) !!}
+                {!! Html::linkButton('#', __('All'), ['class'=>'advanced_filter_clear', 'type'=>'warning', 'size'=>'xs', 'icon' => 'list']) !!}
+                {!! Html::linkButton('#', __('Add file'), ['class'=>'add-new', 'type'=>'primary', 'size'=>'xs', 'icon' => 'upload']) !!}
             </div>
         </div>
         <div class="ibox-content">
@@ -17,7 +17,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                {!! Form::label('filter_created_at', trans('common.created_at'), ['class' => 'col-md-3 control-label']) !!}
+                                {!! Form::label('filter_created_at', __('Created at'), ['class' => 'col-md-3 control-label']) !!}
                                 <div class="col-md-9">
                                     {!! Form::daterange('filter_created_at', [], ['class' => 'form-control']) !!}
                                 </div>
@@ -25,7 +25,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                {!! Form::label('filter_updated_at', trans('common.updated_at'), ['class' => 'col-md-3 control-label']) !!}
+                                {!! Form::label('filter_updated_at', __('Updated at'), ['class' => 'col-md-3 control-label']) !!}
                                 <div class="col-md-9">
                                     {!! Form::daterange('filter_updated_at', [], ['class' => 'form-control']) !!}
                                 </div>
@@ -54,7 +54,7 @@
     };
     window.settings.mbDatatables = {
         trans: {
-            name: '{{trans('file::common.file')}}'
+            name: '{{__('File')}}'
         }
     }
 </script>
@@ -65,10 +65,10 @@
         url_update: '{{route('backend.file.update', ['file' => '__ID__'])}}',
         datatableApi: window.LaravelDataTables['file-manage'],
         trans: {
-            add_new: "{{trans('file::common.add_new')}}",
-            replace: "{{trans('file::common.replace')}}",
-            ajax_upload: "{{trans('file::error.ajax_upload')}}",
-            unable_upload: "{{trans('file::error.unable_upload')}}"
+            add_new: "{{__('Add file')}}",
+            replace: "{{__('Replace file')}}",
+            ajax_upload: "{{__('Your browser does not support HTML5 File Upload!')}}",
+            unable_upload: "{{__('Error: Unable to upload file')}}"
         }
     });
 </script>

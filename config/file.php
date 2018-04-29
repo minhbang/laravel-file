@@ -27,7 +27,7 @@ return [
         'backend.sidebar.media.file' => [
             'priority' => 5,
             'url'      => 'route:backend.file.index',
-            'label'    => 'trans:file::common.manage_title',
+            'label'    => '__:Manage File',
             'icon'     => 'fa-newspaper-o',
             'active'   => 'backend/file*',
             'role' => 'sys.admin',

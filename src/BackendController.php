@@ -24,7 +24,7 @@ class BackendController extends BaseController
      */
     public function index(Builder $builder)
     {
-        $this->buildHeading(trans('file::common.manage_title'), 'fa-newspaper-o', ['#' => trans('file::common.file')]);
+        $this->buildHeading(__('Manage File'), 'fa-newspaper-o', ['#' => __('File')]);
 
         $builder->ajax(route('backend.file.data'));
         $html = $builder->columns([
@@ -40,13 +40,13 @@ class BackendController extends BaseController
             [
                 'data' => 'title',
                 'name' => 'title',
-                'title' => trans('file::common.title'),
+                'title' => __('Title'),
                 'class' => 'file-title',
             ],
         ])->addAction([
             'data' => 'actions',
             'name' => 'actions',
-            'title' => trans('common.actions'),
+            'title' => __('Actions'),
             'class' => 'min-width',
         ]);
 
@@ -85,7 +85,7 @@ class BackendController extends BaseController
 
         return response()->json([
             'type' => $error ? 'error' : 'success',
-            'content' => $error ?: trans('file::common.upload_success'),
+            'content' => $error ?: __('Save the upload file successfully'),
             'file' => $error ? null : $file->forReturn(),
         ]);
     }
@@ -123,7 +123,7 @@ class BackendController extends BaseController
 
         return response()->json([
             'type' => $error ? 'error' : 'success',
-            'content' => $error ?: trans('file::common.replace_success'),
+            'content' => $error ?: __('Save changes successfully'),
             'file' => $error ? null : $file->forReturn(),
         ]);
     }
@@ -139,7 +139,7 @@ class BackendController extends BaseController
 
         return response()->json([
             'type' => 'success',
-            'content' => trans('common.delete_object_success', ['name' => trans('file::common.file')]),
+            'content' => __('Delete <strong>:name</strong> success', ['name' => __('File')]),
         ]);
     }
 
@@ -153,7 +153,7 @@ class BackendController extends BaseController
         return [
             'title' => [
                 'rules' => 'required|max:255',
-                'label' => trans('file::common.title'),
+                'label' => __('Title'),
             ],
         ];
     }

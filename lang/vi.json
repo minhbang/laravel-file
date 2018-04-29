@@ -1,0 +1,22 @@
+{
+    "Add file":"Thêm file",
+    "Error: Unable to upload file":"Lỗi: không thể upload file",
+    "File":"File",
+    "File list":"Danh sách file",
+    "Hit":"Đọc",
+    "Ignore if you do not want to change the file":"Bỏ qua nếu không muốn thay đổi file",
+    "Manage File":"Quản lý File",
+    "Mime types":"Loại File",
+    "No file selected":"Chưa chọn file",
+    "Position":"Thứ tự",
+    "Replace file":"Thay đổi file",
+    "Save changes successfully":"Lưu file thay đổi thành công",
+    "Save the upload file successfully":"Lưu file tải lên thành công",
+    "Select file":"Chọn file",
+    "Select file...":"Chọn file...",
+    "Size":"Dung lượng",
+    "Title":"Tiêu đề",
+    "Title is empty":"Chưa nhập Tiêu đề",
+    "Upload":"Tải lên",
+    "Your browser does not support HTML5 File Upload!":"Trình duyệt của bạn không hổ trợ tính năng HTML5 File Upload!"
+}

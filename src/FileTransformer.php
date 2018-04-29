@@ -20,7 +20,7 @@ class FileTransformer extends ModelTransformer
             'icon'    => $file->present()->icon,
             'title'   => Html::linkQuickUpdate($file->id, $file->title, [
                     'attr'      => 'title',
-                    'title'     => trans("file::common.title"),
+                    'title'     => __("Title"),
                     'class'     => 'w-lg',
                     'placement' => 'top',
                 ]
@@ -34,7 +34,7 @@ class FileTransformer extends ModelTransformer
                         'size'  => 'xs',
                         'icon'  => 'fa-cloud-upload',
                         'type'  => 'success',
-                        'title' => trans('file::common.replace'),
+                        'title' => __('Replace file'),
                     ],
                     ['id' => $file->id]
                 ) .
@@ -42,7 +42,7 @@ class FileTransformer extends ModelTransformer
                     "{$this->zone}.file",
                     ['file' => $file->id],
                     $file->title,
-                    trans("file::common.file"),
+                    __("File"),
                     [
                         'renderPreview' => 'link',
                         'renderEdit'    => false,

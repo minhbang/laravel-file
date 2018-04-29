@@ -8,8 +8,8 @@
                 <div class="form-group">
                     {!! Form::text("title", null, [
                     'class' => 'form-control input-sm',
-                    'data-error' => trans('file::error.empty_title'),
-                    'placeholder' => trans('file::common.title').'...'
+                    'data-error' => __('Title is empty'),
+                    'placeholder' => __('Title').'...'
                     ]) !!}
                     <p class="help-block with-errors"></p>
                 </div>
@@ -17,8 +17,8 @@
                 <div class="form-group">
                     {!! Form::file("name", [
                     'class' => 'form-control filestyle',
-                    'data-error' => trans('file::error.empty_file'),
-                    'data-buttonText' => ' '.trans('file::common.select_file'),
+                    'data-error' => __('No file selected'),
+                    'data-buttonText' => ' '.__('Select file...'),
                     'data-buttonName'=>"btn-white",
                     'data-size'=>"sm"
                     ]) !!}
@@ -28,10 +28,10 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <button type="submit" class="btn btn-success btn-sm" style="margin-right: 5px">
-                        <i class="fa fa-cloud-upload"></i> {{trans('file::common.upload')}}
+                        <i class="fa fa-cloud-upload"></i> {{__('Upload')}}
                     </button>
                     <button type="reset" class="btn btn-sm btn-white cancel">
-                        <i class="fa fa-close"></i> {{trans('common.cancel')}}
+                        <i class="fa fa-close"></i> {{__('Cancel')}}
                     </button>
                     <div class="progress progress-small" style="display: none">
                         <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0"

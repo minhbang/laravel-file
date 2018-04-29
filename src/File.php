@@ -143,7 +143,7 @@ class File extends Model
 
             return null;
         } else {
-            return trans('file::error.empty_file');
+            return __('No file selected');
         }
     }
 
@@ -160,7 +160,7 @@ class File extends Model
         $this->title = $request->get($title_key);
         $error = null;
         if (! $this->title) {
-            $error = trans('file::error.empty_title');
+            $error = __('Title is empty');
         } else {
             $error = $this->fillFile($request, $file_key);
             if (is_null($error)) {
